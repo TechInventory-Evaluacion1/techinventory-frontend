@@ -1,0 +1,51 @@
+<div class="gestion-container">
+  <div class="gestion-header">
+    <div>
+      <h2>Gestión de Inventario</h2>
+      <p class="subtitulo">Sincronización y control de stock E-Tech Logistics</p>
+    </div>
+    @if (esAdmin) {
+      <button class="btn-nuevo" (click)="abrirModalCrear()">+ Nuevo Producto</button>
+    }
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <span class="kpi-title">Total Productos</span>
+      <span class="kpi-value">{{ totalProductos }}</span>
+    </div>
+    <div class="kpi-card kpi-warning">
+      <span class="kpi-title">Stock Crítico (< 10)</span>
+      <span class="kpi-value">{{ totalStockCritico }}</span>
+    </div>
+    <div class="kpi-card kpi-accent">
+      <span class="kpi-title">Valor en Inventario</span>
+      <span class="kpi-value">{{ valorTotalInventario | currency:'CLP':'symbol-narrow':'1.0-0':'es-CL' }}</span>
+    </div>
+  </div>
+
+  <div class="filtros-bar">
+    <input type="text" [(ngModel)]="filtroTexto" placeholder="Buscar por nombre..." class="search-input" />
+    
+    <select [(ngModel)]="filtroEstado" class="select-estado">
+      <option value="TODOS">Todos los Estados</option>
+      <option value="CRITICO">Stock Bajo / Crítico</option>
+      <option value="AGOTADO">Agotados</option>
+    </select>
+  </div>
+
+  <app-tabla-inventario
+    [productos]="productosFiltrados"
+    (editar)="abrirModalEditar($event)"
+    (eliminar)="eliminarProducto($event)"
+    (cambiarStock)="actualizarStockEvento($event)"
+  ></app-tabla-inventario>
+
+  @if (mostrarModal) {
+    <app-modal-producto
+      [productoEditar]="productoEditar"
+      (guardar)="guardarProducto($event)"
+      (cerrar)="cerrarModal()"
+    ></app-modal-producto>
+  }
+</div>
